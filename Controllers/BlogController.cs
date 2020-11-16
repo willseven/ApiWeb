@@ -25,11 +25,34 @@ namespace TodoApi.Controllers
         [HttpGet]
         public Blog Get()
         {
-                Console.WriteLine("Querying for a blog");
-                var blog = _context.Blogs
-                    .FirstOrDefault();
-                   
+            Console.WriteLine("Querying for a blog");
+            var blog = _context.Blogs
+                .FirstOrDefault();
+
             return blog;
         }
+
+        [HttpGet("count")]
+        public int Count()
+        {
+            Console.WriteLine("Counting blogs");
+            var Count = _context.Blogs.Count();
+
+
+            return Count;
+        }
+        [HttpPost]
+        public Blog Create(Blog newBlog)
+        {
+            var createBlog = new Blog { Url = newBlog.Url };
+            // Create
+            Console.WriteLine("Inserting a new blog");
+            _context.Add(createBlog);
+            _context.SaveChanges();
+
+
+            return createBlog;
+        }
+
     }
 }
