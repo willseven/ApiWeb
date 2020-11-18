@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace TodoApi.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class BlogController : ControllerBase
     {
 
@@ -99,7 +100,39 @@ namespace TodoApi.Controllers
             _context.Update(blog);
             _context.SaveChanges();
             return blog;
-        } 
+        }
+        
+        //METHOD PUT CON ENVIO DE ID EN LA URL
+        private bool TodoItemExists(int id) =>
+     _context.Blogs.Any(e => e.BlogId == id);
+
+        [HttpPut("{id}")]
+public async Task<IActionResult> UpdateTodoItem(int id, Blog Blog)
+{
+    if (id != Blog.BlogId)
+    {
+        return BadRequest();
+    }
+
+    var todoItem = await _context.Blogs.FindAsync(id);
+    if (todoItem == null)
+    {
+        return NotFound();
+    }
+
+    todoItem.Url = Blog.Url;
+
+    try
+    {
+        await _context.SaveChangesAsync();
+    }
+    catch (DbUpdateConcurrencyException) when (!TodoItemExists(id))
+    {
+        return NotFound();
+    }
+
+    return NoContent();
+}
 
     }
 }
