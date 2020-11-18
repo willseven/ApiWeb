@@ -6,10 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
+
 namespace TodoApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("Api/[controller]")]
     public class BlogController : ControllerBase
     {
 
@@ -132,6 +133,12 @@ public async Task<IActionResult> UpdateTodoItem(int id, Blog Blog)
     }
 
     return NoContent();
+}
+
+[HttpPut("login")]
+public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
+{
+    var userFromRepo = await _context.Login(userForLoginDto.Username, userForLoginDto.Password);
 }
 
     }
